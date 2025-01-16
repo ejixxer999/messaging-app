@@ -8,7 +8,7 @@ interface Message {
     content: string;
 }
 
-const secretKey = process.env.NEXT_PUBLIC_SECRET_KEY || 'default-secret-key'; // Ensure fallback to a default key
+const secretKey = process.env.SECRET_KEY || 'default-secret-key'; // Use a fallback
 
 export default function Home() {
     const [message, setMessage] = useState<string>('');
@@ -19,8 +19,10 @@ export default function Home() {
         socketRef.current = io();
 
         socketRef.current.on('chat message', (encryptedMsg: string) => {
+            console.log('Encrypted message received:', encryptedMsg);
             const bytes = CryptoJS.AES.decrypt(encryptedMsg, secretKey);
             const decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+            console.log('Decrypted message:', decryptedMessage);
             setMessages((prevMessages) => [...prevMessages, { content: decryptedMessage }]);
         });
 
@@ -33,6 +35,8 @@ export default function Home() {
         e.preventDefault();
         if (message && socketRef.current) {
             const encryptedMessage = CryptoJS.AES.encrypt(message, secretKey).toString();
+            console.log('Original message:', message);
+            console.log('Encrypted message:', encryptedMessage);
             socketRef.current.emit('chat message', encryptedMessage);
             setMessage('');
         }
@@ -57,5 +61,3 @@ export default function Home() {
         </div>
     );
 }
-
-
