@@ -43,13 +43,16 @@ export default function Home() {
     };
 
     return (
-        <div>
-            <ul id="messages">
+        <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
+            <div className='w-full max-w-md p-4 bh-white rounded-lg shadow-lg'>
+                <div className='message-container'>
+            <ul id="messages" className='space-y-2 rounded-md'>
                 {messages.map((msg, index) => (
-                    <li key={index}>{msg.content}</li>
+                    <li key={index} className='px-4 py-2 bg-gray-200 rounded-md'>{msg.content}</li>
                 ))}
             </ul>
-            <form onSubmit={sendMessage}>
+                </div>
+            <form onSubmit={sendMessage} className='flex mt-4'>
                 <input
                     id="input"
                     autoComplete="off"
@@ -61,6 +64,7 @@ export default function Home() {
                   dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700
                    dark:border-gray-700">Send</button>
             </form>
+            </div>
         </div>
     );
 }
