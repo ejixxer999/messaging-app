@@ -15,6 +15,7 @@ export default function Home() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isTyping, setIsTyping] = useState(false)
     const socketRef = useRef<Socket | null>(null); // Initialize useRef
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         socketRef.current = io();
@@ -45,6 +46,9 @@ export default function Home() {
     };
     const handleTyping = () => {
         setIsTyping(true)
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current)
+
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 2000)
     }
 
     const stopTyping = () => {
