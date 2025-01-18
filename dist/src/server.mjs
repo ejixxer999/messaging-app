@@ -19,8 +19,10 @@ app.prepare().then(function () {
         console.log('a user connected');
         socket.on('disconnect', function () { return console.log('user disconnected'); });
         socket.on('chat message', function (encryptedMsg) {
+            console.log('Encrypted message received:', encryptedMsg);
             var bytes = CryptoJS.AES.decrypt(encryptedMsg, secretKey);
             var decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+            console.log('Decrypted message:', decryptedMessage);
             io.emit('chat message', encryptedMsg);
         });
     });

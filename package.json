@@ -6,7 +6,7 @@
   "scripts": {
    "dev": "tsc && node dist/src/server.mjs",
     "build": "tsc",
-    "start": "NODE_ENV=production node dist/src/server.mjs",
+    "start": "tsc && node dist/src/server.mjs",
     "lint": "next lint"
   },
   "dependencies": {

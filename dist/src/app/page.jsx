@@ -11,7 +11,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 import { useEffect, useState, useRef } from 'react';
 import io from 'socket.io-client';
 import CryptoJS from 'crypto-js';
-var secretKey = process.env.S_KEY || 'default-secret-key'; // Use a fallback
+var secretKey = process.env.SECRET_KEY || 'default-secret-key'; // Use a fallback
 export default function Home() {
     var _a = useState(''), message = _a[0], setMessage = _a[1];
     var _b = useState([]), messages = _b[0], setMessages = _b[1];
@@ -19,8 +19,10 @@ export default function Home() {
     useEffect(function () {
         socketRef.current = io();
         socketRef.current.on('chat message', function (encryptedMsg) {
+            console.log('Encrypted message received:', encryptedMsg);
             var bytes = CryptoJS.AES.decrypt(encryptedMsg, secretKey);
             var decryptedMessage = bytes.toString(CryptoJS.enc.Utf8);
+            console.log('Decrypted message:', decryptedMessage);
             setMessages(function (prevMessages) { return __spreadArray(__spreadArray([], prevMessages, true), [{ content: decryptedMessage }], false); });
         });
         return function () {
@@ -32,6 +34,8 @@ export default function Home() {
         e.preventDefault();
         if (message && socketRef.current) {
             var encryptedMessage = CryptoJS.AES.encrypt(message, secretKey).toString();
+            console.log('Original message:', message);
+            console.log('Encrypted message:', encryptedMessage);
             socketRef.current.emit('chat message', encryptedMessage);
             setMessage('');
         }
