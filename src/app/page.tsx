@@ -13,6 +13,7 @@ const secretKey = process.env.SECRET_KEY || 'default-secret-key'; // Use a fallb
 export default function Home() {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<Message[]>([]);
+    const [isTyping, setIsTyping] = useState(false)
     const socketRef = useRef<Socket | null>(null); // Initialize useRef
 
     useEffect(() => {
@@ -40,7 +41,15 @@ export default function Home() {
             socketRef.current.emit('chat message', encryptedMessage);
             setMessage('');
         }
+
     };
+    const handleTyping = () => {
+        setIsTyping(true)
+    }
+
+    const stopTyping = () => {
+        setIsTyping(false)
+    }
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
@@ -58,11 +67,22 @@ export default function Home() {
                     autoComplete="off"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    className="input-field"
+                    placeholder="Write your message"
+                    onKeyUp={handleTyping}
+                    onBlur={stopTyping}
                 />
                 <button className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none
                  focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2
                   dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700
                    dark:border-gray-700">Send</button>
+                   {isTyping && (
+                    <div className="typing-indicator">
+                        <div className="typing-dot"></div>
+                        <div className="typing-dot"></div>
+                        <div className="typing-dot"></div>
+                    </div>
+                   )}
             </form>
             </div>
         </div>
